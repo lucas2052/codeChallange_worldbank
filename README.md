@@ -105,8 +105,6 @@ The cleaning process is managed by `cleandata.py`.
 | 10 | Validate the final columns, missing values, duplicates, text, ISO codes, numeric types, and ranges |
 | 11 | Display the final data size and export `worldData_cleaned.csv` |
 
-The cleaning steps run in order. If the final validation fails, the cleaned
-file is not exported. 
 
 ### 2. Required Questions
 
@@ -118,7 +116,7 @@ The questions are calculated by `question.py` using the cleaned data.
 | 2 | Check that each ISO code is unique |
 | 3 | Count countries or areas in each continent and find the highest count |
 | 4 | Calculate the combined area of each UN region and find the largest |
-| 5 | Rank countries or areas by life expectancy and select the highest |
+| 5 | Rank countries by life expectancy and select the highest |
 | 6 | Calculate the average GDP per capita for each subregion |
 | 7 | Find the subregions with the highest and lowest average GDP per capita |
 
@@ -138,64 +136,26 @@ The interface is provided by `interface.py`.
 | 8 | Display the filtered records in an interactive table |
 
 
+## Quick Start
 
-### Quick Start
-### Requirements
-
-Before running the project, make sure Python 3.10 or later is installed.
-
-The main Python packages used are:
-
-- pandas;
-- Streamlit;
-- pytest.
+Python 3.10 or later is recommended.
 
 ### 1. Download the Project
 
-Clone the GitHub repository:
+Clone the repository and move into the project folder:
 
 ```bash
 git clone https://github.com/lucas2052/codeChallange_worldbank.git
-```
-
-Move into the project folder:
-
-```bash
 cd codeChallange_worldbank
 ```
 
-Alternatively, download the repository as a ZIP file from GitHub and open
-the extracted folder in a terminal.
-
-### 2. Create a Virtual Environment
-
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-```
-
-Activate it on macOS or Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-Activate it on Windows:
-
-```bash
-.venv\Scripts\activate
-```
-
-Using a virtual environment is recommended but not required.
-
-### 3. Install the Dependencies
+### 2. Install the Required Packages
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-### 4. Run the Complete Project
+### 3. Run the Complete Project
 
 ```bash
 python run.py
@@ -203,68 +163,112 @@ python run.py
 
 This command:
 
-1. cleans and validates `worldData.csv`;
+1. cleans and validates the original data;
 2. creates or replaces `worldData_cleaned.csv`;
-3. prints the answers to the required questions in the terminal;
+3. prints the answers to the required questions;
 4. starts the local interactive interface.
 
-The interface should open automatically in the default browser. If it does
-not open, use the local URL shown in the terminal, usually:
+Press `Control + C` to stop the interface.
 
-```text
-http://localhost:8501
+### 4. Run the Tests
+
+After stopping the interface, run:
+
+```bash
+python -m pytest -v
 ```
 
+Pytest will find and run all test files in the `tests/` folder.
 
 
 
+## Data Definitions
+### Cleaning Rules
+
+| Data issue | Definition | Action |
+|---|---|---|
+| Missing values | Empty text, `#N/A`, or a pandas missing value. `NA` is excluded because it is Namibia's ISO code | Remove the complete row |
+| ISO code format | The code must contain two uppercase letters and appear only once | Stop validation if an invalid or repeated code remains |
+| Duplicates | Completely repeated rows or columns containing the same values | Keep the first copy and remove the repeated copy |
+| Unexpected data type | The six descriptive columns must contain text. `area_km2`, `pop`, `lifeExp`, and `gdpPercap` are stored as integers | Convert text columns to strings, round valid numeric values, and convert them to integers. Stop and warning if a numeric value cannot be converted |
+| Invalid numeric range | A numeric value is below or above the accepted limits selected from reviewed 2014 reference data | Remove the complete row |
+| Unneeded columns | Columns that are not part of the required output, such as the old CSV index | Remove the column |
+
+
+### Accepted Numeric Ranges
+
+| Column | Minimum | Maximum | Unit |
+|---|---:|---:|---|
+| `area_km2` | 1 | 17,100,000 | Square kilometres |
+| `pop` | 800 | 1,400,000,000 | People |
+| `lifeExp` | 40 | 86 | Years |
+| `gdpPercap` | 200 | 200,000 | Current US dollars per person |
+
+These ranges were selected after reviewing unexpected values and comparing
+them with published 2014 reference data. 
+
+### Interface Summary Statistics
+The summary is calculated separately for:
+
+- area;
+- population;
+- life expectancy;
+- GDP per capita.
+
+| Summary item | Definition |
+|---|---|
+| Number of results | Number of unique `iso_a2` codes in the filtered data |
+| Average | The sum of all values divided by the number of filtered records |
+| Highest | Highest value and its related area |
+| Lowest | Lowest value and its related area |
+| Below average | Number of records with a value lower than the arithmetic mean |
 
 
 
-### Data Define
+## Key Challenges and Decisions
+### Handling Edge Cases
+
+The initial cleaning rules could not identify every unusual case. Manual
+review found that `NA` was Namibia's valid ISO code and that Haiti's
+population value was positive but still unreasonable.
+
+I added specific loading and numeric range rules to handle these cases.
+A more reliable solution would compare ISO codes and country indicators with
+maintained authoritative reference data.
+
+### Extending the Tests
+
+I first wrote unit tests using normal input to check that each function worked.
+After finding unusual values in the dataset, I extended the tests to include
+invalid and boundary cases.
+
+These tests check values at and outside the accepted numeric limits, repeated
+ISO codes, missing values, and filter combinations with no results. This
+helped confirm that the cleaning and interface rules worked as intended.
+
+## Limitation
+- **Limited reusability** — the program is closely tied to the structure of
+  `worldData.csv`. Using the program with a different CSV structure would require manual changes to the cleaning functions and tests.
+
+- **External validation** — The program does not compare each record with
+  an authoritative external source, so it checks data plausibility rather
+  than factual accuracy.
+
+- **Possible selection bias** — rows containing missing or invalid values are
+  removed completely.Their removal may affect the final statistics.
+
+- **Numeric precision** — decimal values are rounded and stored as integers. 
+  This causes some precision to be lost.
 
 
+## Possible Improvements
+- **Reusable rules** — store column names, data types, missing-value rules,
+  and numeric ranges in a configuration file. This would make it easier to
+  use the program with other CSV files.
 
+- **Official reference checks** — compare ISO codes and country values with
+  reliable official sources instead of using only format and range checks.
 
-
-
-
-
-
-
-### Key Challenges and Decisions
-
-#### Handling `NA`
-
-During a hand-made check, I found that pandas treated `NA` as a missing
-value. However, `NA` is the ISO code for Namibia.
-
-So I updated the CSV loading settings to keep `NA` as text. Then the actual missing
-values, including `#N/A` and empty text, are marked in a separate cleaning
-step.
-
-#### Defining Numeric Ranges
-
-The first numeric range checks only removed zero or negative values. During
-manual review, I found that Haiti had a population value of approximately
-`1.06`. 
-
-Although this value was not empty or negative, it was not reasonable for a
-country-level population field. I reviewed 2014 country-level reference data
-and updated the accepted ranges for related metrics in order to make sure the range setting close with reality.
-
-#### Testing Boundary Cases
-
-The dataset contains several types of data quality problems, so testing only
-normal values was not enough.
-
-The unit tests include both normal and boundary cases, such as:
-
-- missing and empty values;
-- completely duplicated and conflicting records;
-- duplicated columns;
-- invalid ISO code formats;
-- values out of the accepted numeric ranges;
-- filter combinations that return no records;
-
-### Limitation
+- **Review removed records** — save removed records and their removal reasons
+  in a separate file. They can then be checked before they are corrected or
+  permanently removed.

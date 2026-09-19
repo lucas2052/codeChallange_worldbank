@@ -159,7 +159,7 @@ def convert_numeric_columns(df):
 # 14. mark rows with invalid numeric values
 def get_invalid_row_mask(df):
     invalid_area = (
-        (df["area_km2"] <= 0)
+        (df["area_km2"] < 1)
         | (df["area_km2"] > 17_100_000)
     )
 
