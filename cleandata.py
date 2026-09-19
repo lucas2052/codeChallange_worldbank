@@ -406,8 +406,11 @@ def main():
     # check repeated ISO codes after cleaning
     duplicate_iso_rows = find_duplicate_iso_rows(df)
 
-    print("\nRows with repeated ISO codes after cleaning:")
-    print(duplicate_iso_rows)
+    print("\nRepeated ISO codes after cleaning:")
+    if duplicate_iso_rows.empty:
+       print("None")
+    else:
+       print(duplicate_iso_rows)
 
     # validate the cleaned data
     validate_cleaned_data(df)

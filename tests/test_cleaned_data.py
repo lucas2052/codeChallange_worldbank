@@ -531,16 +531,28 @@ def test_validation_rejects_duplicate_rows(
         )
 
 
-# 16. check that validation rejects duplicate ISO codes
+# 16. check that validation rejects conflicting country records
 def test_validation_rejects_duplicate_iso_codes(
     valid_cleaned_data
 ):
-    invalid_data = valid_cleaned_data.copy()
+    first_record = valid_cleaned_data.iloc[
+        [0]
+    ].copy()
 
-    invalid_data.loc[
-        1,
-        "iso_a2"
-    ] = "CN"
+    second_record = first_record.copy()
+
+    second_record.loc[
+        second_record.index[0],
+        "pop"
+    ] = 1300
+
+    invalid_data = pd.concat(
+        [
+            first_record,
+            second_record
+        ],
+        ignore_index=True
+    )
 
     with pytest.raises(
         ValueError,

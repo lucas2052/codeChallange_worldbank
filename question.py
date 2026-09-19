@@ -2,113 +2,302 @@ from pathlib import Path
 
 import pandas as pd
 
-# 1. read the cleaned world data
-base_dir = Path(__file__).resolve().parent
-data_path = base_dir / "worldData_cleaned.csv"
 
-df = pd.read_csv(data_path)
+# 1. load the cleaned world data
+def load_cleaned_data(file_path):
+    df = pd.read_csv(
+        file_path
+    )
 
-# 2. find the continent with the most countries
-# find the number of unique countries in each continent
-continent_country_counts = (
-    df.groupby("continent")["name_long"]
-    .nunique()
-    .sort_values(ascending=False)
-)
-
-print("\nNumber of countries by continent:")
-print(continent_country_counts)
-
-# get the continent with most countries
-continent_with_most_countries = (
-    continent_country_counts.idxmax()
-)
-# get the number of countries in that continent
-highest_country_count = (
-    continent_country_counts.max()
-)
-
-print("\n1. Continent with the most countries:")
-print(continent_with_most_countries)
-
-print("Number of countries:")
-print(highest_country_count)
+    return df
 
 
-#3. find the region with the biggest area
-# grounp by region
-grouped_by_region = df.groupby("region_un")
-
-print("\nRegions:")
-print(list(grouped_by_region.groups.keys()))
-
-# get the total area for each region
-region_area = grouped_by_region["area_km2"].sum()
-
-print("\nTotal area for each region:")
-print(region_area)
-
-#find the region with the biggest area
-region_with_biggest_area = region_area.idxmax()
-biggest_area = region_area.max()
-
-print("\n2. Region with the biggest area:")
-print(region_with_biggest_area)
-print("Total area (km^2):")
-print(biggest_area)
-
-# 4. find the country with the highest life expectancy
-# rank the counries by life expectancy
-life_exp_ranking = df.sort_values(
-    by="lifeExp",
-    ascending=False
-)
-
-print("\nCountries ordered by life expectancy:")
-print(
-    life_exp_ranking[
-        ["name_long", "lifeExp"]
-    ].head(10)
-)
-
-# find the counntry with the highest life expectancy
-country_with_highest_life_exp = life_exp_ranking.iloc[0]["name_long"]
-highest_life_exp = life_exp_ranking.iloc[0]["lifeExp"]
-
-print("\n3. Country with the highest life expectancy:")
-print(country_with_highest_life_exp)
-print("Life expectancy:")
-print(highest_life_exp)
+# 2. check that each ISO code appears only once
+def check_unique_iso_codes(df):
+    if df["iso_a2"].duplicated().any():
+        raise ValueError(
+            "Duplicate ISO codes were found."
+        )
 
 
-# 5. find the higest/lowest Gdp per capita with subregion
-# group by subregion
-grouped_by_subregion = df.groupby("subregion")
+# 3. count the countries in each continent
+def count_countries_by_continent(df):
+    country_counts = (
+        df.groupby("continent")["iso_a2"]
+        .nunique()
+    )
 
-# get the average GDP per capita for each subregion
-subregion_gdp = grouped_by_subregion["gdpPercap"].mean()
+    return country_counts
 
-# rank the subregions by average GDP per capita
-subregion_gdp_ranking = subregion_gdp.sort_values(
-    ascending=False
-)
 
-# find the subregion with the highest average GDP per capita
-subregion_with_highest_gdp = subregion_gdp_ranking.idxmax()
-highest_avg_gdp = subregion_gdp_ranking.max()
+# 4. rank continents by the number of countries
+def rank_continents_by_country_count(
+    country_counts
+):
+    continent_ranking = (
+        country_counts.sort_values(
+            ascending=False
+        )
+    )
 
-print("\n4. Subregion with the highest average GDP per capita:")
-print(subregion_with_highest_gdp)
-print("Average GDP per capita:")
-print(highest_avg_gdp)
+    return continent_ranking
 
-# find the subregion with the lowest average GDP per capita
-subregion_with_lowest_gdp = subregion_gdp_ranking.idxmin()
-lowest_avg_gdp = subregion_gdp_ranking.min()
 
-print("\n5. Subregion with the lowest average GDP per capita:")
-print(subregion_with_lowest_gdp)
-print("Average GDP per capita:")
-print(lowest_avg_gdp)
+# 5. get the continent with the most countries
+def get_top_continent(continent_ranking):
+    continent = continent_ranking.index[0]
+    country_count = continent_ranking.iloc[0]
+
+    return continent, country_count
+
+
+# 6. calculate the total area for each region
+def calculate_area_by_region(df):
+    region_area = (
+        df.groupby("region_un")["area_km2"]
+        .sum()
+    )
+
+    return region_area
+
+
+# 7. rank regions by total area
+def rank_regions_by_area(region_area):
+    region_ranking = (
+        region_area.sort_values(
+            ascending=False
+        )
+    )
+
+    return region_ranking
+
+
+# 8. get the region with the largest total area
+def get_largest_region(region_ranking):
+    region = region_ranking.index[0]
+    total_area = region_ranking.iloc[0]
+
+    return region, total_area
+
+
+# 9. rank countries by life expectancy
+def rank_countries_by_life_expectancy(df):
+    life_expectancy_ranking = (
+        df[
+            [
+                "name_long",
+                "lifeExp"
+            ]
+        ]
+        .sort_values(
+            by="lifeExp",
+            ascending=False
+        )
+        .reset_index(drop=True)
+    )
+
+    return life_expectancy_ranking
+
+
+# 10. get the country with the highest life expectancy
+def get_highest_life_expectancy(
+    life_expectancy_ranking
+):
+    country = (
+        life_expectancy_ranking
+        .iloc[0]["name_long"]
+    )
+
+    life_expectancy = (
+        life_expectancy_ranking
+        .iloc[0]["lifeExp"]
+    )
+
+    return country, life_expectancy
+
+
+# 11. calculate the average GDP for each subregion
+def calculate_average_gdp_by_subregion(df):
+    average_gdp = (
+        df.groupby("subregion")["gdpPercap"]
+        .mean()
+    )
+
+    return average_gdp
+
+
+# 12. rank subregions by average GDP per capita
+def rank_subregions_by_average_gdp(
+    average_gdp
+):
+    gdp_ranking = (
+        average_gdp.sort_values(
+            ascending=False
+        )
+    )
+
+    return gdp_ranking
+
+
+# 13. get the subregion with the highest average GDP
+def get_highest_average_gdp(gdp_ranking):
+    subregion = gdp_ranking.index[0]
+    average_gdp = gdp_ranking.iloc[0]
+
+    return subregion, average_gdp
+
+
+# 14. get the subregion with the lowest average GDP
+def get_lowest_average_gdp(gdp_ranking):
+    subregion = gdp_ranking.index[-1]
+    average_gdp = gdp_ranking.iloc[-1]
+
+    return subregion, average_gdp
+
+
+# run the analysis
+def main():
+    # set the file path
+    base_dir = Path(__file__).resolve().parent
+    data_path = base_dir / "worldData_cleaned.csv"
+
+    # load the cleaned data
+    df = load_cleaned_data(
+        data_path
+    )
+
+    # check that each country has one record
+    check_unique_iso_codes(df)
+
+    # count and rank countries by continent
+    continent_counts = (
+        count_countries_by_continent(
+            df
+        )
+    )
+
+    continent_ranking = (
+        rank_continents_by_country_count(
+            continent_counts
+        )
+    )
+
+    continent, country_count = (
+        get_top_continent(
+            continent_ranking
+        )
+    )
+
+    print("\n1. Continent with the most countries:")
+    print(continent)
+
+    print("Number of countries:")
+    print(country_count)
+
+    print("\nNumber of countries by continent:")
+    print(continent_ranking)
+
+    # calculate and rank total area by region
+    region_area = calculate_area_by_region(
+        df
+    )
+
+    region_ranking = rank_regions_by_area(
+        region_area
+    )
+
+    region, total_area = get_largest_region(
+        region_ranking
+    )
+
+    print("\n2. Region with the largest total area:")
+    print(region)
+
+    print("Total area (km^2):")
+    print(total_area)
+
+    print("\nTotal area for each region:")
+    print(region_ranking)
+
+    # rank countries by life expectancy
+    life_expectancy_ranking = (
+        rank_countries_by_life_expectancy(
+            df
+        )
+    )
+
+    country, life_expectancy = (
+        get_highest_life_expectancy(
+            life_expectancy_ranking
+        )
+    )
+
+    print(
+        "\n3. Country with the highest "
+        "life expectancy:"
+    )
+    print(country)
+
+    print("Life expectancy:")
+    print(life_expectancy)
+
+    print("\nCountries ordered by life expectancy:")
+    print(
+            life_expectancy_ranking.head(3)
+        )
+
+    # calculate and rank average GDP by subregion
+    average_gdp = (
+        calculate_average_gdp_by_subregion(
+            df
+        )
+    )
+
+    gdp_ranking = (
+        rank_subregions_by_average_gdp(
+            average_gdp
+        )
+    )
+
+    highest_subregion, highest_gdp = (
+        get_highest_average_gdp(
+            gdp_ranking
+        )
+    )
+
+    lowest_subregion, lowest_gdp = (
+        get_lowest_average_gdp(
+            gdp_ranking
+        )
+    )
+
+    print(
+        "\n4.1 Subregion with the highest "
+        "average GDP per capita:"
+    )
+    print(highest_subregion)
+
+    print("Average GDP per capita:")
+    print(highest_gdp)
+
+    print(
+        "\n4.2 Subregion with the lowest "
+        "average GDP per capita:"
+    )
+    print(lowest_subregion)
+
+    print("Average GDP per capita:")
+    print(lowest_gdp)
+
+    print(
+            "\nAverage GDP per capita "
+            "by subregion:"
+        )
+    print(gdp_ranking)
+
+
+# only run main() when this file is started directly
+if __name__ == "__main__":
+    main()
 
 
