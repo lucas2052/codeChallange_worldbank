@@ -13,17 +13,11 @@ def load_data(file_path):
 
 # 2.check basic information about the original data
 def show_original_data(df):
-    print("Original dataset shape:")
-    print(df.shape)
-
-    print("\nColumn names:")
-    print(df.columns.tolist())
-
-    print("\nData information:")
-    df.info()
-
-    print("\nSummary statistics:")
-    print(df.describe())
+    print(
+        f"Original data: "
+        f"{len(df)} rows, "
+        f"{len(df.columns)} columns"
+    )
 
 
 # 3. remove spaces around text
@@ -308,14 +302,11 @@ def validate_cleaned_data(df):
 
 # 18. view the final cleaned data
 def show_final_data(df):
-    print("\nFinal dataset shape:")
-    print(df.shape)
-
-    print("\nFinal columns:")
-    print(df.columns.tolist())
-
-    print("\nFinal data types:")
-    print(df.dtypes)
+    print(
+        f"Final data: "
+        f"{len(df)} rows, "
+        f"{len(df.columns)} columns"
+    )
 
 # 19. save the cleaned data without the pandas index
 def save_cleaned_data(df, output_path):
@@ -330,113 +321,113 @@ def save_cleaned_data(df, output_path):
 
 # run the cleaning process
 def main():
-    # set the input and output paths
+    # Set the input and output paths
     base_dir = Path(__file__).resolve().parent
     input_path = base_dir / "worldData.csv"
     output_path = base_dir / "worldData_cleaned.csv"
 
-    # load the original data
+    # Load and inspect the original data
     df = load_data(input_path)
-
-    # view the original data
     show_original_data(df)
 
-    # clean the text columns
+    # Clean the text columns
     df = clean_text_columns(df)
 
-    # mark missing values
+    # Mark and remove missing values
     df = mark_missing_values(df)
 
-    # find rows with missing values
-    missing_rows = find_missing_rows(df)
+    missing_count = len(
+        find_missing_rows(df)
+    )
 
-    print("\nRows with missing values:")
-    print(missing_rows)
-
-    print("\nNumber of rows with missing values:")
-    print(len(missing_rows))
-
-    # remove rows with missing values
     df = remove_missing_rows(df)
 
-    print("\nDataset shape after removing missing values:")
-    print(df.shape)
+    # Find and remove repeated columns
+    duplicate_columns = find_duplicate_columns(
+        df
+    )
 
-    # find columns with the same values
-    duplicate_columns = find_duplicate_columns(df)
+    removed_columns = [
+        second_column
+        for first_column, second_column
+        in duplicate_columns
+    ]
 
-    print("\nColumns with the same values:")
-    print(duplicate_columns)
-
-    # remove repeated columns
     df = remove_duplicate_columns(
         df,
         duplicate_columns
     )
 
-    # remove the old CSV index column
+    # Remove the old CSV index column
+    old_index_removed = (
+        "Unnamed: 0" in df.columns
+    )
+
     df = remove_old_index_column(df)
 
-    print("\nColumns after removing extra columns:")
-    print(df.columns.tolist())
+    # Find and remove completely repeated rows
+    duplicate_count = (
+        df.duplicated().sum()
+    )
 
-    # find completely repeated rows
-    duplicate_rows = find_duplicate_rows(df)
-
-    print("\nDuplicate rows:")
-    print(duplicate_rows)
-
-    print("\nNumber of extra duplicate rows:")
-    print(df.duplicated().sum())
-
-    # remove completely repeated rows
     df = remove_duplicate_rows(df)
 
-    print("\nDataset shape after removing duplicate rows:")
-    print(df.shape)
-
-    # convert the number columns to integers
+    # Convert the numeric columns
     df = convert_numeric_columns(df)
 
-    # find rows with invalid numeric values
-    invalid_rows = find_invalid_rows(df)
+    # Find and remove invalid numeric rows
+    invalid_count = len(
+        find_invalid_rows(df)
+    )
 
-    print("\nRows with invalid numeric values:")
-    print(invalid_rows)
-
-    print("\nNumber of rows with invalid numeric values:")
-    print(len(invalid_rows))
-
-    # remove rows with invalid numeric values
     df = remove_invalid_rows(df)
 
-    print("\nDataset shape after removing invalid values:")
-    print(df.shape)
+    # Check repeated ISO codes
+    duplicate_iso_count = len(
+        find_duplicate_iso_rows(df)
+    )
 
-    # check repeated ISO codes after cleaning
-    duplicate_iso_rows = find_duplicate_iso_rows(df)
+    # Show a short cleaning summary
+    print("\nCleaning summary")
+    print("----------------")
+    print(
+        "Missing rows removed:",
+        missing_count
+    )
+    print(
+        "Repeated columns removed:",
+        removed_columns
+    )
+    print(
+        "Old CSV index removed:",
+        old_index_removed
+    )
+    print(
+        "Duplicate rows removed:",
+        duplicate_count
+    )
+    print(
+        "Invalid numeric rows removed:",
+        invalid_count
+    )
+    print(
+        "Repeated ISO codes remaining:",
+        duplicate_iso_count
+    )
 
-    print("\nRepeated ISO codes after cleaning:")
-    if duplicate_iso_rows.empty:
-       print("None")
-    else:
-       print(duplicate_iso_rows)
-
-    # validate the cleaned data
+    # Validate the cleaned data
     validate_cleaned_data(df)
 
-    print("\nFinal validation passed.")
+    print("Validation passed.")
 
-    # view the cleaned data
+    # Show and save the cleaned data
     show_final_data(df)
 
-    # save the cleaned data
     save_cleaned_data(
         df,
         output_path
     )
 
 
-#  only run main() when this file is started directly
 if __name__ == "__main__":
     main()
