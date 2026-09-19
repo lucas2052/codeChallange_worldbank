@@ -1,0 +1,145 @@
+iso_a2,name_long,continent,region_un,subregion,type,area_km2,pop,lifeExp,gdpPercap
+FJ,Fiji,Oceania,Oceania,Melanesia,Sovereign country,19290,885806,70,8222
+TZ,Tanzania,Africa,Africa,Eastern Africa,Sovereign country,932746,52234869,64,2402
+CA,Canada,North America,Americas,Northern America,Sovereign country,10036043,35535348,82,43079
+US,United States,North America,Americas,Northern America,Country,9510744,318622525,79,51922
+KZ,Kazakhstan,Asia,Asia,Central Asia,Sovereign country,2729811,17288285,72,23587
+PG,Papua New Guinea,Oceania,Oceania,Melanesia,Sovereign country,464520,7755785,65,3709
+ID,Indonesia,Asia,Asia,South-Eastern Asia,Sovereign country,1819251,255131116,69,10003
+AR,Argentina,South America,Americas,South America,Sovereign country,2784469,42981515,76,18798
+CL,Chile,South America,Americas,South America,Sovereign country,814844,17613798,79,22195
+CD,Democratic Republic of the Congo,Africa,Africa,Middle Africa,Sovereign country,2323492,73722860,59,785
+KE,Kenya,Africa,Africa,Eastern Africa,Sovereign country,590837,46024250,66,2753
+SD,Sudan,Africa,Africa,Northern Africa,Sovereign country,1850886,37737913,64,4188
+TD,Chad,Africa,Africa,Middle Africa,Sovereign country,1271695,13569438,52,2077
+HT,Haiti,North America,Americas,Caribbean,Sovereign country,28541,1,63,1653
+DO,Dominican Republic,North America,Americas,Caribbean,Sovereign country,48158,10405844,73,12663
+RU,Russian Federation,Europe,Europe,Eastern Europe,Sovereign country,17018507,143819666,71,25285
+BS,Bahamas,North America,Americas,Caribbean,Sovereign country,15585,382169,75,28457
+TL,Timor-Leste,Asia,Asia,South-Eastern Asia,Sovereign country,14715,1212814,68,6263
+LS,Lesotho,Africa,Africa,Southern Africa,Sovereign country,27506,2145785,53,2677
+MX,Mexico,North America,Americas,Central America,Sovereign country,1969480,124221600,77,16623
+UY,Uruguay,South America,Americas,South America,Sovereign country,176854,3419546,77,19828
+BR,Brazil,South America,Americas,South America,Sovereign country,8508557,204213133,75,15374
+BO,Bolivia,South America,Americas,South America,Sovereign country,1085270,10562159,68,6325
+PE,Peru,South America,Americas,South America,Sovereign country,1309700,30973354,75,11548
+CO,Colombia,South America,Americas,South America,Sovereign country,1151883,47791911,74,12716
+PA,Panama,North America,Americas,Central America,Sovereign country,75265,3903986,78,20018
+CR,Costa Rica,North America,Americas,Central America,Sovereign country,53832,4757575,79,14372
+NI,Nicaragua,North America,Americas,Central America,Sovereign country,129540,6013997,75,4785
+HN,Honduras,North America,Americas,Central America,Sovereign country,113790,8809216,73,4231
+SV,El Salvador,North America,Americas,Central America,Sovereign country,20893,6281189,73,6891
+GT,Guatemala,North America,Americas,Central America,Sovereign country,109459,15923559,73,7147
+BZ,Belize,North America,Americas,Central America,Sovereign country,22045,351694,70,8000
+VE,Venezuela,South America,Americas,South America,Sovereign country,908499,30738378,74,16745
+GY,Guyana,South America,Americas,South America,Sovereign country,209802,763393,66,6906
+SR,Suriname,South America,Americas,South America,Sovereign country,144269,547928,71,15307
+EC,Ecuador,South America,Americas,South America,Sovereign country,250747,15903112,76,10901
+PR,Puerto Rico,North America,Americas,Caribbean,Dependency,9225,3534874,79,35066
+JM,Jamaica,North America,Americas,Caribbean,Sovereign country,12461,2862087,76,8051
+BW,Botswana,Africa,Africa,Southern Africa,Sovereign country,591912,2168573,65,15915
+NA,Namibia,Africa,Africa,Southern Africa,Sovereign country,824887,2370992,63,9617
+SN,Senegal,Africa,Africa,Western Africa,Sovereign country,194390,14546111,66,2219
+ML,Mali,Africa,Africa,Western Africa,Sovereign country,1235561,16962846,57,1865
+MR,Mauritania,Africa,Africa,Western Africa,Sovereign country,1054107,4063920,63,3655
+BJ,Benin,Africa,Africa,Western Africa,Sovereign country,116999,10286712,60,2001
+NE,Niger,Africa,Africa,Western Africa,Sovereign country,1182270,19148219,59,904
+NG,Nigeria,Africa,Africa,Western Africa,Sovereign country,905072,176460502,53,5672
+CM,Cameroon,Africa,Africa,Middle Africa,Sovereign country,460325,22239904,57,3196
+TG,Togo,Africa,Africa,Western Africa,Sovereign country,60967,7228915,60,1315
+GH,Ghana,Africa,Africa,Western Africa,Sovereign country,243473,26962563,62,3869
+CI,Côte d'Ivoire,Africa,Africa,Western Africa,Sovereign country,329826,22531350,53,3055
+GW,Guinea-Bissau,Africa,Africa,Western Africa,Sovereign country,36192,1725744,57,1398
+LR,Liberia,Africa,Africa,Western Africa,Sovereign country,98207,4390737,62,805
+SL,Sierra Leone,Africa,Africa,Western Africa,Sovereign country,75980,7079162,51,1692
+BF,Burkina Faso,Africa,Africa,Western Africa,Sovereign country,271594,17585977,59,1582
+CF,Central African Republic,Africa,Africa,Middle Africa,Sovereign country,621860,4515392,51,597
+CG,Republic of the Congo,Africa,Africa,Middle Africa,Sovereign country,339682,4871101,64,5538
+GA,Gabon,Africa,Africa,Middle Africa,Sovereign country,269476,1875713,65,16679
+GQ,Equatorial Guinea,Africa,Africa,Middle Africa,Sovereign country,27121,1129424,57,31543
+ZM,Zambia,Africa,Africa,Eastern Africa,Sovereign country,751921,15620974,61,3633
+MW,Malawi,Africa,Africa,Eastern Africa,Sovereign country,111197,17068838,62,1090
+MZ,Mozambique,Africa,Africa,Eastern Africa,Sovereign country,810995,27212382,57,1080
+SZ,eSwatini,Africa,Africa,Southern Africa,Sovereign country,18119,1295097,56,7871
+AO,Angola,Africa,Africa,Middle Africa,Sovereign country,1245464,26920466,61,6257
+BI,Burundi,Africa,Africa,Eastern Africa,Sovereign country,26239,9891790,57,803
+IL,Israel,Asia,Asia,Western Asia,Country,22991,8215700,82,31702
+LB,Lebanon,Asia,Asia,Western Asia,Sovereign country,10099,5603279,79,13831
+MG,Madagascar,Africa,Africa,Eastern Africa,Sovereign country,589383,23589801,65,1372
+PS,Palestine,Asia,Asia,Western Asia,Disputed,5037,4294682,73,4320
+GM,The Gambia,Africa,Africa,Western Africa,Sovereign country,14031,1917852,61,1550
+TN,Tunisia,Africa,Africa,Northern Africa,Sovereign country,156237,11143908,75,10767
+DZ,Algeria,Africa,Africa,Northern Africa,Sovereign country,2315917,39113313,76,13483
+JO,Jordan,Asia,Asia,Western Asia,Sovereign country,89207,8809306,74,8622
+AE,United Arab Emirates,Asia,Asia,Western Asia,Sovereign country,79881,9070867,77,63943
+QA,Qatar,Asia,Asia,Western Asia,Sovereign country,11328,2374419,78,120860
+KW,Kuwait,Asia,Asia,Western Asia,Sovereign country,16652,3782450,74,70832
+IQ,Iraq,Asia,Asia,Western Asia,Sovereign country,436965,35006080,69,14838
+VU,Vanuatu,Oceania,Oceania,Melanesia,Sovereign country,7490,258850,72,2892
+TH,Thailand,Asia,Asia,South-Eastern Asia,Sovereign country,510126,68416772,75,14857
+LA,Lao PDR,Asia,Asia,South-Eastern Asia,Sovereign country,229080,6576397,66,5436
+MM,Myanmar,Asia,Asia,South-Eastern Asia,Sovereign country,679574,51924182,66,4770
+VN,Vietnam,Asia,Asia,South-Eastern Asia,Sovereign country,335991,92544915,76,5265
+MN,Mongolia,Asia,Asia,Eastern Asia,Sovereign country,1544322,2923896,69,11349
+IN,India,Asia,Asia,Southern Asia,Sovereign country,3142892,1293859294,68,5385
+BD,Bangladesh,Asia,Asia,Southern Asia,Sovereign country,133782,159405279,72,2973
+BT,Bhutan,Asia,Asia,Southern Asia,Sovereign country,39377,776448,69,7366
+PK,Pakistan,Asia,Asia,Southern Asia,Sovereign country,874120,185546257,66,4576
+AF,Afghanistan,Asia,Asia,Southern Asia,Sovereign country,652270,32758020,63,1839
+TJ,Tajikistan,Asia,Asia,Central Asia,Sovereign country,138112,8362745,71,2547
+KG,Kyrgyzstan,Asia,Asia,Central Asia,Sovereign country,195875,5835500,70,3182
+TM,Turkmenistan,Asia,Asia,Central Asia,Sovereign country,480810,5466241,68,14332
+IR,Iran,Asia,Asia,Southern Asia,Sovereign country,1617559,78411092,75,16924
+AM,Armenia,Asia,Asia,Western Asia,Sovereign country,28657,2906220,74,7971
+BY,Belarus,Europe,Europe,Eastern Europe,Sovereign country,208970,9474511,73,17944
+UA,Ukraine,Europe,Europe,Eastern Europe,Sovereign country,572549,45271947,71,8243
+PL,Poland,Europe,Europe,Eastern Europe,Sovereign country,310402,38011735,78,24347
+AT,Austria,Europe,Europe,Western Europe,Sovereign country,85065,8546356,81,44321
+HU,Hungary,Europe,Europe,Eastern Europe,Sovereign country,92476,9866468,76,24161
+MD,Moldova,Europe,Europe,Eastern Europe,Sovereign country,32320,3556397,71,4763
+RO,Romania,Europe,Europe,Eastern Europe,Sovereign country,238356,19908979,75,19678
+LT,Lithuania,Europe,Europe,Northern Europe,Sovereign country,63831,2932367,75,26258
+LV,Latvia,Europe,Europe,Northern Europe,Sovereign country,63924,1993782,74,22172
+EE,Estonia,Europe,Europe,Northern Europe,Sovereign country,44678,1314545,77,27114
+DE,Germany,Europe,Europe,Western Europe,Sovereign country,357430,80982500,81,43561
+BG,Bulgaria,Europe,Europe,Eastern Europe,Sovereign country,110217,7223938,74,16302
+GR,Greece,Europe,Europe,Southern Europe,Sovereign country,131965,10892413,81,24082
+AL,Albania,Europe,Europe,Southern Europe,Sovereign country,29695,2889104,78,10701
+HR,Croatia,Europe,Europe,Southern Europe,Sovereign country,57531,4238389,77,20334
+CH,Switzerland,Europe,Europe,Western Europe,Sovereign country,46185,8188649,83,57218
+LU,Luxembourg,Europe,Europe,Western Europe,Sovereign country,2417,556319,82,93655
+NL,Netherlands,Europe,Europe,Western Europe,Country,40024,16865008,82,45668
+PT,Portugal,Europe,Europe,Southern Europe,Sovereign country,93409,10401062,81,26024
+ES,Spain,Europe,Europe,Southern Europe,Sovereign country,502306,46480882,83,31195
+IE,Ireland,Europe,Europe,Northern Europe,Sovereign country,58458,4657740,81,48898
+SB,Solomon Islands,Oceania,Oceania,Melanesia,Sovereign country,24728,575504,70,2140
+NZ,New Zealand,Oceania,Oceania,Australia and New Zealand,Country,277628,4509700,81,34455
+AU,Australia,Oceania,Oceania,Australia and New Zealand,Country,7687614,23504138,82,43547
+LK,Sri Lanka,Asia,Asia,Southern Asia,Sovereign country,65370,20771000,75,10650
+CN,China,Asia,Asia,Eastern Asia,Country,9409830,1364270000,76,12759
+IT,Italy,Europe,Europe,Southern Europe,Sovereign country,315105,60789140,83,33946
+GB,United Kingdom,Europe,Europe,Northern Europe,Country,249986,64613160,81,38252
+IS,Iceland,Europe,Europe,Northern Europe,Sovereign country,107736,327386,83,41701
+AZ,Azerbaijan,Asia,Asia,Western Asia,Sovereign country,91113,9535079,72,16715
+GE,Georgia,Asia,Asia,Western Asia,Sovereign country,69048,3727000,73,8749
+MY,Malaysia,Asia,Asia,South-Eastern Asia,Sovereign country,338226,30228017,75,24195
+BN,Brunei Darussalam,Asia,Asia,South-Eastern Asia,Sovereign country,10700,411704,77,76089
+SI,Slovenia,Europe,Europe,Southern Europe,Sovereign country,19118,2061980,81,28418
+FI,Finland,Europe,Europe,Northern Europe,Country,341242,5461512,81,39018
+SK,Slovakia,Europe,Europe,Eastern Europe,Sovereign country,47068,5418649,77,27285
+CZ,Czech Republic,Europe,Europe,Eastern Europe,Sovereign country,81208,10525347,79,29120
+JP,Japan,Asia,Asia,Eastern Asia,Sovereign country,404620,127276000,84,37337
+PY,Paraguay,South America,Americas,South America,Sovereign country,401336,6552584,73,8502
+SA,Saudi Arabia,Asia,Asia,Western Asia,Sovereign country,1920324,30776722,74,49958
+CY,Cyprus,Asia,Asia,Western Asia,Sovereign country,6207,1152309,80,29786
+MA,Morocco,Africa,Africa,Northern Africa,Sovereign country,591719,34318082,75,7079
+EG,Egypt,Africa,Africa,Northern Africa,Sovereign country,996312,91812566,71,9880
+ET,Ethiopia,Africa,Africa,Eastern Africa,Sovereign country,1132393,97366774,65,1425
+UG,Uganda,Africa,Africa,Eastern Africa,Sovereign country,245768,38833338,59,1637
+RW,Rwanda,Africa,Africa,Eastern Africa,Sovereign country,23365,11345357,66,1630
+BA,Bosnia and Herzegovina,Europe,Europe,Southern Europe,Sovereign country,50605,3566002,77,10517
+MK,Macedonia,Europe,Europe,Southern Europe,Sovereign country,25062,2077495,75,12298
+ME,Montenegro,Europe,Europe,Southern Europe,Sovereign country,13444,621810,77,14797
+XK,Kosovo,Europe,Europe,Southern Europe,Sovereign country,11230,1821800,71,8698
+TT,Trinidad and Tobago,North America,Americas,Caribbean,Sovereign country,7738,1354493,70,31182
+SS,South Sudan,Africa,Africa,Eastern Africa,Sovereign country,624909,11530971,56,1936
