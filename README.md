@@ -25,51 +25,29 @@ The project uses Python, pandas, Streamlit, and pytest to:
 
 
 ## Approach
-The data cleaning process follows the steps below:
+
+The project follows the process below:
 
 ```mermaid
-flowchart TD
-    A[Set the input and output paths] --> B[Load worldData.csv]
-    B --> C[Keep NA as Namibia's ISO code]
-    C --> D[Inspect shape, columns, types, and statistics]
+flowchart LR
+    A["Raw CSV<br/>Load and inspect"] -->
+    B["Prepare text<br/>Keep NA<br/>Trim spaces<br/>Mark missing values"] -->
+    C["Clean records<br/>Remove missing rows<br/>Remove repeated columns<br/>Remove index and duplicates"] -->
+    D["Clean numbers<br/>Round and convert types<br/>Check accepted ranges"] -->
+    E["Validate<br/>Columns, ISO codes,<br/>types and ranges"] -->
+    F["Cleaned CSV"]
 
-    D --> E[Remove spaces around text]
-    E --> F[Change empty text and #N/A to missing values]
-    F --> G[Find and report rows with missing values]
-    G --> H[Remove rows with missing values]
-
-    H --> I[Find columns containing the same values]
-    I --> J[Remove repeated columns and keep the first]
-    J --> K[Remove the old CSV index column]
-
-    K --> L[Find and report completely duplicated rows]
-    L --> M[Remove completely duplicated rows]
-
-    M --> N[Convert numeric columns to integers]
-    N --> O[Round decimal values before conversion]
-
-    O --> P[Define accepted numeric ranges]
-    P --> Q[Find and report invalid numeric rows]
-    Q --> R[Remove invalid numeric rows]
-
-    R --> S[Check for repeated ISO codes]
-    S --> T{Do repeated ISO codes remain?}
-
-    T -- Yes --> U[Stop and report a validation error]
-    T -- No --> V[Run final validation]
-
-    V --> W[Check final columns]
-    W --> X[Check missing and duplicated records]
-    X --> Y[Check text and ISO code formats]
-    Y --> Z[Check integer types and numeric ranges]
-
-    Z --> AA[Display the final data information]
-    AA --> AB[Export worldData_cleaned.csv]
+    F --> G["Answer required questions"]
+    F --> H["Streamlit filters<br/>and summary statistics"]
 ```
+The project is divided into three main parts:
 
-The cleaning process first reports each data quality issue before removing
-the affected records. The final validation must pass before the cleaned
-data is exported.
+1. `cleandata.py` prepares, cleans, validates, and exports the data.
+2. `question.py` calculates the answers using the cleaned data.
+3. `interface.py` filters the cleaned data and displays summary statistics.
+
+The detailed cleaning steps and decisions are explained in the
+Data Cleaning Process section.
 
 ## Main Results
 
