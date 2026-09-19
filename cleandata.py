@@ -164,15 +164,25 @@ def convert_numeric_columns(df):
 
 # 14. mark rows with invalid numeric values
 def get_invalid_row_mask(df):
-    invalid_area = df["area_km2"] <= 0
-    invalid_population = df["pop"] <= 0
-
-    invalid_life_exp = (
-        (df["lifeExp"] <= 0)
-        | (df["lifeExp"] > 100)
+    invalid_area = (
+        (df["area_km2"] <= 0)
+        | (df["area_km2"] > 17_100_000)
     )
 
-    invalid_gdp = df["gdpPercap"] <= 0
+    invalid_population = (
+        (df["pop"] < 800)
+        | (df["pop"] > 1_400_000_000)
+    )
+
+    invalid_life_exp = (
+        (df["lifeExp"] < 40)
+        | (df["lifeExp"] > 86)
+    )
+
+    invalid_gdp = (
+        (df["gdpPercap"] < 200)
+        | (df["gdpPercap"] > 200_000)
+    )
 
     return (
         invalid_area

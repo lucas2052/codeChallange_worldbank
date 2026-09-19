@@ -4,133 +4,111 @@ import pandas as pd
 import streamlit as st
 
 
-# 1. set the file path
-base_dir = Path(__file__).resolve().parent
-data_path = base_dir / "worldData_cleaned.csv"
-
-
-# 2. read the cleaned data
-df = pd.read_csv(data_path)
-
-
-# 3. set the page
-st.set_page_config(
-    page_title="World Bank Data",
-    layout="wide"
-)
-
-# 4. add the page title
-st.title("World Bank Data")
-
-# 5. add a description
-st.write(
-    "This is a simple Streamlit app that displays the cleaned World Bank data.You can filter the data by country, year, and indicator. You can also download the filtered data as a CSV file."
-)
-
-# 6. get the unique filter options from the cleaned data
-continent_options = sorted(
-    df["continent"].unique()
-)
-
-region_options = sorted( 
-    df["region_un"].unique()
-)
-
-subregion_options = sorted(
-    df["subregion"].unique()
-)
-
-type_options = sorted(
-    df["type"].unique()
-)
-
-# 7. set the filter bar 
-st.subheader("Filter the data")
-
-filter_col1, filter_col2, filter_col3, filter_col4 = (
-    st.columns(4)
-)
-
-# 8. add the filters to the page
-with filter_col1:
-    selected_continents = st.multiselect(
-        "Continent",
-        continent_options
+# 1. load the cleaned data
+def load_cleaned_data(file_path):
+    df = pd.read_csv(
+        file_path
     )
 
-with filter_col2:
-    selected_regions = st.multiselect(
-        "Region",
-        region_options
+    return df
+
+
+# 2. get the available filter options
+def get_filter_options(df, column):
+    options = sorted(
+        df[column].dropna().unique()
     )
 
-with filter_col3:
-    selected_subregions = st.multiselect(
-        "Subregion",
-        subregion_options
-    )
+    return options
 
-with filter_col4:
-    selected_types = st.multiselect(
-        "Type",
-        type_options
-    )
 
-# 9. check if at least one filter is selected
-if not (
-    selected_continents
-    or selected_regions
-    or selected_subregions
-    or selected_types
+# 3. check whether at least one filter is selected
+def has_selected_filters(
+    continents=None,
+    regions=None,
+    subregions=None,
+    country_types=None
 ):
-    st.info("Select filter to explore data.")
-    st.stop()
+    return any([
+        continents,
+        regions,
+        subregions,
+        country_types
+    ])
 
-# 10. apply the selected filters to the data
-filtered_df = df.copy()
 
-if selected_continents:
-    filtered_df = filtered_df[
-        filtered_df["continent"].isin(selected_continents)
+# 4. apply the selected filters
+def filter_data(
+    df,
+    continents=None,
+    regions=None,
+    subregions=None,
+    country_types=None
+):
+    filtered_df = df.copy()
+
+    if continents:
+        filtered_df = filtered_df[
+            filtered_df["continent"].isin(
+                continents
+            )
+        ]
+
+    if regions:
+        filtered_df = filtered_df[
+            filtered_df["region_un"].isin(
+                regions
+            )
+        ]
+
+    if subregions:
+        filtered_df = filtered_df[
+            filtered_df["subregion"].isin(
+                subregions
+            )
+        ]
+
+    if country_types:
+        filtered_df = filtered_df[
+            filtered_df["type"].isin(
+                country_types
+            )
+        ]
+
+    return filtered_df
+
+
+# 5. calculate summary statistics for one column
+def get_summary(df, column):
+    if df.empty:
+        raise ValueError(
+            "Cannot calculate a summary for empty data."
+        )
+
+    average_value = df[column].mean()
+
+    max_index = df[column].idxmax()
+    max_value = df.loc[
+        max_index,
+        column
+    ]
+    max_country = df.loc[
+        max_index,
+        "name_long"
     ]
 
-if selected_regions:
-    filtered_df = filtered_df[
-        filtered_df["region_un"].isin(selected_regions)
+    min_index = df[column].idxmin()
+    min_value = df.loc[
+        min_index,
+        column
     ]
-
-if selected_subregions:
-    filtered_df = filtered_df[
-        filtered_df["subregion"].isin(selected_subregions)
+    min_country = df.loc[
+        min_index,
+        "name_long"
     ]
-
-if selected_types:
-    filtered_df = filtered_df[
-        filtered_df["type"].isin(selected_types)
-    ]
-# ensure display warning if no matches
-if filtered_df.empty:
-    st.warning(
-        "No data matches the selected filters. "
-        "Please change or clear some filters."
-    )
-    st.stop()
-
-# 11. get the summary statistics
-
-def get_summary(column):
-    average_value = filtered_df[column].mean()
-
-    max_index = filtered_df[column].idxmax()
-    max_value = filtered_df.loc[max_index, column]
-    max_country = filtered_df.loc[max_index, "name_long"]
-
-    min_index = filtered_df[column].idxmin()
-    min_value = filtered_df.loc[min_index, column]
-    min_country = filtered_df.loc[min_index, "name_long"]
 
     below_average = (
-        filtered_df[column] < average_value
+        df[column] < average_value
     ).sum()
 
     return {
@@ -142,134 +120,262 @@ def get_summary(column):
         "below_average": below_average
     }
 
-area_summary = get_summary("area_km2")
-population_summary = get_summary("pop")
-life_exp_summary = get_summary("lifeExp")
-gdp_summary = get_summary("gdpPercap")
 
-# 12. display the summary cards
+# 6. display the filters
+def display_filters(df):
+    continent_options = get_filter_options(
+        df,
+        "continent"
+    )
 
-st.subheader("Summary Statistics")
+    region_options = get_filter_options(
+        df,
+        "region_un"
+    )
 
-number_of_results = filtered_df["name_long"].nunique()
+    subregion_options = get_filter_options(
+        df,
+        "subregion"
+    )
 
-st.write(
-    f"Found {number_of_results} matching results."
-)
+    type_options = get_filter_options(
+        df,
+        "type"
+    )
 
-area_col, pop_col, life_col, gdp_col = st.columns(4)
+    st.subheader("Filter the data")
 
-# draw the area summary card
-with area_col:
-    with st.container(border=True,height = 300):
+    filter_columns = st.columns(4)
+
+    with filter_columns[0]:
+        selected_continents = st.multiselect(
+            "Continent",
+            continent_options
+        )
+
+    with filter_columns[1]:
+        selected_regions = st.multiselect(
+            "Region",
+            region_options
+        )
+
+    with filter_columns[2]:
+        selected_subregions = st.multiselect(
+            "Subregion",
+            subregion_options
+        )
+
+    with filter_columns[3]:
+        selected_types = st.multiselect(
+            "Type",
+            type_options
+        )
+
+    return (
+        selected_continents,
+        selected_regions,
+        selected_subregions,
+        selected_types
+    )
+
+
+# 7. display one summary card
+def display_summary_card(
+    title,
+    summary,
+    value_format
+):
+    with st.container(
+        border=True,
+        height=300
+    ):
         st.metric(
+            title,
+            value_format.format(
+                summary["average"]
+            )
+        )
+
+        st.write(
+            f'**Highest:** {summary["max_country"]}'
+        )
+
+        st.caption(
+            value_format.format(
+                summary["max_value"]
+            )
+        )
+
+        st.write(
+            f'**Lowest:** {summary["min_country"]}'
+        )
+
+        st.caption(
+            value_format.format(
+                summary["min_value"]
+            )
+        )
+
+        st.write(
+            "Below average:",
+            int(summary["below_average"])
+        )
+
+
+# 8. display all summary cards
+def display_summary_statistics(df):
+    st.subheader("Summary Statistics")
+
+    number_of_results = df["iso_a2"].nunique()
+
+    st.write(
+        f"Found {number_of_results} matching results."
+    )
+
+    area_summary = get_summary(
+        df,
+        "area_km2"
+    )
+
+    population_summary = get_summary(
+        df,
+        "pop"
+    )
+
+    life_exp_summary = get_summary(
+        df,
+        "lifeExp"
+    )
+
+    gdp_summary = get_summary(
+        df,
+        "gdpPercap"
+    )
+
+    summary_columns = st.columns(4)
+
+    with summary_columns[0]:
+        display_summary_card(
             "Average Area",
-            f'{area_summary["average"]:,.0f} km²'
+            area_summary,
+            "{:,.0f} km²"
         )
 
-        st.write(
-            f'**Highest:** {area_summary["max_country"]}'
-        )
-        st.caption(
-            f'{area_summary["max_value"]:,.0f} km²'
-        )
-
-        st.write(
-            f'**Lowest:** {area_summary["min_country"]}'
-        )
-        st.caption(
-            f'{area_summary["min_value"]:,.0f} km²'
-        )
-
-        st.write(
-            "Below average:",
-            area_summary["below_average"]
-        )
-# draw the population summary card
-with pop_col:
-    with st.container(border=True,height = 300):
-        st.metric(
+    with summary_columns[1]:
+        display_summary_card(
             "Average Population",
-            f'{population_summary["average"]:,.0f}'
+            population_summary,
+            "{:,.0f}"
         )
 
-        st.write(
-            f'**Highest:** {population_summary["max_country"]}'
-        )
-        st.caption(
-            f'{population_summary["max_value"]:,.0f}'
-        )
-
-        st.write(
-            f'**Lowest:** {population_summary["min_country"]}'
-        )
-        st.caption(
-            f'{population_summary["min_value"]:,.0f}'
-        )
-
-        st.write(
-            "Below average:",
-            population_summary["below_average"]
-        )
-#draw the life expectancy summary card
-with life_col:
-    with st.container(border=True,height = 300):
-        st.metric(
+    with summary_columns[2]:
+        display_summary_card(
             "Average Life Expectancy",
-            f'{life_exp_summary["average"]:.1f} years'
+            life_exp_summary,
+            "{:.1f} years"
         )
 
-        st.write(
-            f'**Highest:** {life_exp_summary["max_country"]}'
-        )
-        st.caption(
-            f'{life_exp_summary["max_value"]:.1f} years'
-        )
-
-        st.write(
-            f'**Lowest:** {life_exp_summary["min_country"]}'
-        )
-        st.caption(
-            f'{life_exp_summary["min_value"]:.1f} years'
-        )
-
-        st.write(
-            "Below average:",
-            life_exp_summary["below_average"]
-        )
-
-# draw the GDP summary card
-with gdp_col:
-    with st.container(border=True,height = 300):
-        st.metric(
+    with summary_columns[3]:
+        display_summary_card(
             "Average GDP per Capita",
-            f'${gdp_summary["average"]:,.0f}'
-        )
-
-        st.write(
-            f'**Highest:** {gdp_summary["max_country"]}'
-        )
-        st.caption(
-            f'${gdp_summary["max_value"]:,.0f}'
-        )
-
-        st.write(
-            f'**Lowest:** {gdp_summary["min_country"]}'
-        )
-        st.caption(
-            f'${gdp_summary["min_value"]:,.0f}'
-        )
-
-        st.write(
-            "Below average:",
-            gdp_summary["below_average"]
+            gdp_summary,
+            "${:,.0f}"
         )
 
 
-# 13. display the filtered data
-st.subheader("Filtered Data")
-st.write("Number of results:", len(filtered_df))
-st.dataframe(filtered_df, use_container_width=True)
+# 9. display the filtered data
+def display_filtered_data(df):
+    st.subheader("Filtered Data")
+
+    st.write(
+        "Number of results:",
+        len(df)
+    )
+
+    st.dataframe(
+        df,
+        hide_index=True,
+        use_container_width=True
+    )
+
+
+# run the Streamlit page
+def main():
+    # set the page
+    st.set_page_config(
+        page_title="World Bank Data",
+        layout="wide"
+    )
+
+    # set the file path
+    base_dir = Path(__file__).resolve().parent
+    data_path = base_dir / "worldData_cleaned.csv"
+
+    # load the cleaned data
+    df = load_cleaned_data(
+        data_path
+    )
+
+    # display the page title
+    st.title("World Bank Data")
+
+    st.write(
+        "Explore the cleaned World Bank data. "
+        "Filter the results by continent, region, "
+        "subregion, or country type."
+    )
+
+    # display the filters
+    (
+        selected_continents,
+        selected_regions,
+        selected_subregions,
+        selected_types
+    ) = display_filters(df)
+
+    # require at least one filter
+    if not has_selected_filters(
+        continents=selected_continents,
+        regions=selected_regions,
+        subregions=selected_subregions,
+        country_types=selected_types
+    ):
+        st.info(
+            "Select at least one filter to explore the data."
+        )
+        st.stop()
+
+    # apply the selected filters
+    filtered_df = filter_data(
+        df,
+        continents=selected_continents,
+        regions=selected_regions,
+        subregions=selected_subregions,
+        country_types=selected_types
+    )
+
+    # stop when no records match
+    if filtered_df.empty:
+        st.warning(
+            "No data matches the selected filters. "
+            "Please change or clear some filters."
+        )
+        st.stop()
+
+    # display the summary statistics
+    display_summary_statistics(
+        filtered_df
+    )
+
+    # display the filtered data
+    display_filtered_data(
+        filtered_df
+    )
+
+
+# only run main() when this file is started directly
+if __name__ == "__main__":
+    main()
 
 
 

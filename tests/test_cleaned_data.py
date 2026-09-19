@@ -391,7 +391,7 @@ def test_find_and_remove_invalid_rows():
         ],
         "area_km2": [
             1,
-            100,
+            17_100_000,
             0,
             100,
             100,
@@ -399,31 +399,31 @@ def test_find_and_remove_invalid_rows():
             100
         ],
         "pop": [
-            1,
-            100,
-            100,
-            0,
-            100,
-            100,
-            100
+            800,
+            1_400_000_000,
+            1000,
+            799,
+            1000,
+            1000,
+            1000
         ],
         "lifeExp": [
-            1,
-            100,
+            40,
+            86,
             70,
             70,
-            0,
-            101,
+            39,
+            87,
             70
         ],
         "gdpPercap": [
-            1,
-            100,
-            100,
-            100,
-            100,
-            100,
-            0
+            200,
+            200_000,
+            1000,
+            1000,
+            1000,
+            1000,
+            199
         ]
     })
 
@@ -439,7 +439,7 @@ def test_find_and_remove_invalid_rows():
         test_data
     )
 
-    # the first two rows are valid, the rest are invalid
+    # The first two rows are valid
     assert invalid_mask.tolist() == [
         False,
         False,
@@ -450,9 +450,14 @@ def test_find_and_remove_invalid_rows():
         True
     ]
 
-    assert len(invalid_rows) == 5
+    assert invalid_rows["name_long"].tolist() == [
+        "Invalid Area",
+        "Invalid Population",
+        "Invalid Life Low",
+        "Invalid Life High",
+        "Invalid GDP"
+    ]
 
-    # valid rows should be kept, invalid rows should be removed
     assert result["name_long"].tolist() == [
         "Valid Minimum",
         "Valid Maximum"
@@ -643,16 +648,31 @@ def test_validation_rejects_wrong_numeric_type(
         )
 
 
-# 21. check that validation rejects invalid range values
-def test_validation_rejects_invalid_range(
-    valid_cleaned_data
+# 21. check that validation rejects values outside the accepted ranges
+@pytest.mark.parametrize(
+    "column, invalid_value",
+    [
+        ("area_km2", 0),
+        ("area_km2", 17_100_001),
+        ("pop", 799),
+        ("pop", 1_400_000_001),
+        ("lifeExp", 39),
+        ("lifeExp", 87),
+        ("gdpPercap", 199),
+        ("gdpPercap", 200_001),
+    ]
+)
+def test_validation_rejects_invalid_ranges(
+    valid_cleaned_data,
+    column,
+    invalid_value
 ):
     invalid_data = valid_cleaned_data.copy()
 
     invalid_data.loc[
         0,
-        "lifeExp"
-    ] = 101
+        column
+    ] = invalid_value
 
     with pytest.raises(
         ValueError,
