@@ -14,7 +14,6 @@ The project uses:
 - **pytest** to test the main functions.
 
 ## Key Features
-
 - Run the complete workflow with one command using `run.py`.
 - Create and save a cleaned version of the original dataset.
 - Apply numeric validation limits based on reviewed 2014 reference data.

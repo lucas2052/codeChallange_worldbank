@@ -77,7 +77,7 @@ def find_duplicate_columns(df):
             first_column = columns[first_index]
             second_column = columns[second_index]
 
-            # check does first and second are same
+            # check whether both columns contain the same values
             if df[first_column].equals(
                 df[second_column]
             ):
@@ -199,7 +199,7 @@ def get_invalid_row_mask(df):
 # 15. find rows with invalid numeric values
 def find_invalid_rows(df):
 
-    # hold the invalid row mask 
+    # get the mask for invalid rows
     invalid_row_mask = get_invalid_row_mask(df)
 
     return df[
@@ -217,7 +217,7 @@ def remove_invalid_rows(df):
 
 # 17. validate the cleaned data before saving
 def validate_cleaned_data(df):
-    # define the expected columns, text columns, and integer columns
+    # define the expected, text, and integer columns
     expected_columns = [
         "iso_a2",
         "name_long",
@@ -449,6 +449,6 @@ def main():
         output_path
     )
 
-# give a name to the method so it can be run solely
+# run main() only when this file is executed directly
 if __name__ == "__main__":
     main()
