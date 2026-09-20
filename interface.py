@@ -15,6 +15,8 @@ def load_cleaned_data(file_path):
 
 # 2. get the available filter options
 def get_filter_options(df, column):
+
+    # create sorted filter options without missing or repeated labels
     options = sorted(
         df[column].dropna().unique()
     )
@@ -29,6 +31,7 @@ def has_selected_filters(
     subregions=None,
     country_types=None
 ):
+    # check if any of the filter lists are not empty
     return any([
         continents,
         regions,
@@ -44,9 +47,11 @@ def filter_data(
     regions=None,
     subregions=None,
     country_types=None
-):
+): 
+    # start with the complete cleaned dataset
     filtered_df = df.copy()
 
+    # apply a filter when the user selected an option
     if continents:
         filtered_df = filtered_df[
             filtered_df["continent"].isin(
@@ -85,8 +90,10 @@ def get_summary(df, column):
             "Cannot calculate a summary for empty data."
         )
 
+    # calculate the average value for the selected field
     average_value = df[column].mean()
 
+    # find the record with the highest value
     max_index = df[column].idxmax()
     max_value = df.loc[
         max_index,
@@ -97,6 +104,7 @@ def get_summary(df, column):
         "name_long"
     ]
 
+    # find the record with the lowest value
     min_index = df[column].idxmin()
     min_value = df.loc[
         min_index,
@@ -107,6 +115,7 @@ def get_summary(df, column):
         "name_long"
     ]
 
+    # count records below the average
     below_average = (
         df[column] < average_value
     ).sum()
@@ -123,6 +132,8 @@ def get_summary(df, column):
 
 # 6. display the filters
 def display_filters(df):
+
+    # build the options from the values in the cleaned dataset
     continent_options = get_filter_options(
         df,
         "continent"
@@ -145,6 +156,7 @@ def display_filters(df):
 
     st.subheader("Filter the data")
 
+    # place the four filters in one row
     filter_columns = st.columns(4)
 
     with filter_columns[0]:
@@ -184,11 +196,13 @@ def display_summary_card(
     title,
     summary,
     value_format
-):
+): 
+    # give each card the same border and height
     with st.container(
         border=True,
         height=300
-    ):
+    ): 
+        # show the average text as main value
         st.metric(
             title,
             value_format.format(
@@ -196,6 +210,7 @@ def display_summary_card(
             )
         )
 
+        # show the highest value and its country or area
         st.write(
             f'**Highest:** {summary["max_country"]}'
         )
@@ -206,6 +221,7 @@ def display_summary_card(
             )
         )
 
+        # show the lowest value and its country or area
         st.write(
             f'**Lowest:** {summary["min_country"]}'
         )
@@ -216,6 +232,7 @@ def display_summary_card(
             )
         )
 
+        # show how many records are below the average
         st.write(
             "Below average:",
             int(summary["below_average"])
@@ -226,12 +243,14 @@ def display_summary_card(
 def display_summary_statistics(df):
     st.subheader("Summary Statistics")
 
+    # count the selected and unique iso code results 
     number_of_results = df["iso_a2"].nunique()
-
+    
     st.write(
         f"Found {number_of_results} matching results."
     )
 
+     # calculate one summary for each numeric field
     area_summary = get_summary(
         df,
         "area_km2"
@@ -252,6 +271,7 @@ def display_summary_statistics(df):
         "gdpPercap"
     )
 
+    # place the four summaries in one row
     summary_columns = st.columns(4)
 
     with summary_columns[0]:
@@ -292,6 +312,8 @@ def display_filtered_data(df):
         len(df)
     )
 
+    # display the filtered data in Streamlit's interactive table
+    # hide the pandas index 
     st.dataframe(
         df,
         hide_index=True,
@@ -301,7 +323,7 @@ def display_filtered_data(df):
 
 # run the Streamlit page
 def main():
-    # set the page
+    # set the page title and use the full browser width
     st.set_page_config(
         page_title="World Bank Data",
         layout="wide"
@@ -316,7 +338,7 @@ def main():
         data_path
     )
 
-    # display the page title
+    # display the page title and instructions
     st.title("World Bank Data")
 
     st.write(
@@ -373,7 +395,7 @@ def main():
     )
 
 
-# only run main() when this file is started directly
+# run main() only when this file is executed directly
 if __name__ == "__main__":
     main()
 

@@ -20,10 +20,11 @@ def show_original_data(df):
     )
 
 
-# 3. remove spaces around text
+# 3. remove spaces before and after text values
 def clean_text_columns(df):
     df = df.copy()
 
+    # find columns stored as object or string
     text_columns = (
         df.select_dtypes(
             include=["object", "string"]
@@ -31,7 +32,7 @@ def clean_text_columns(df):
         .columns
         .tolist()
     )
-
+    # remove spaces before and after each text value
     for column in text_columns:
         df[column] = (
             df[column]
@@ -41,7 +42,7 @@ def clean_text_columns(df):
 
     return df
 
-# 4. mark missing values
+# 4. mark empty text and "#N/A" as missing values
 def mark_missing_values(df):
     return df.replace(
         ["#N/A", ""],
@@ -66,17 +67,21 @@ def find_duplicate_columns(df):
 
     columns = df.columns.tolist()
 
+    # compare each column with every column after it
     for first_index in range(len(columns)):
         for second_index in range(
             first_index + 1,
             len(columns)
         ):
+            # get the column names for the two indices
             first_column = columns[first_index]
             second_column = columns[second_index]
 
+            # check does first and second are same
             if df[first_column].equals(
                 df[second_column]
             ):
+                # save the pair of duplicate columns
                 duplicate_columns.append(
                     (
                         first_column,
@@ -87,19 +92,20 @@ def find_duplicate_columns(df):
     return duplicate_columns
 
 
-# 8. remove repeated columns and keep the first column
+# 8. remove duplicate columns and keep the first column
 def remove_duplicate_columns(
     df,
     duplicate_column_pairs
 ):
     columns_to_remove = []
 
-    for first_column, second_column in duplicate_column_pairs:
+    # keep the first column and collect the second column from each pair
+    for _, second_column in duplicate_column_pairs:
         if second_column not in columns_to_remove:
             columns_to_remove.append(
                 second_column
             )
-
+    # remove the collected duplicate columns
     return df.drop(
         columns=columns_to_remove
     )
@@ -136,6 +142,7 @@ def remove_old_index_column(df):
 def convert_numeric_columns(df):
     df = df.copy()
 
+    # list the numeric columns to be converted to integers
     integer_columns = [
         "area_km2",
         "pop",
@@ -143,6 +150,7 @@ def convert_numeric_columns(df):
         "gdpPercap"
     ]
 
+    # convert each numeric column to integer
     for column in integer_columns:
         df[column] = (
             pd.to_numeric(
@@ -158,11 +166,13 @@ def convert_numeric_columns(df):
 
 # 14. mark rows with invalid numeric values
 def get_invalid_row_mask(df):
+
+    # check each numeric field against its accepted range
     invalid_area = (
         (df["area_km2"] < 1)
         | (df["area_km2"] > 17_100_000)
     )
-
+    
     invalid_population = (
         (df["pop"] < 800)
         | (df["pop"] > 1_400_000_000)
@@ -178,6 +188,7 @@ def get_invalid_row_mask(df):
         | (df["gdpPercap"] > 200_000)
     )
 
+    # combine the invalid masks to find all rows with invalid numeric values
     return (
         invalid_area
         | invalid_population
@@ -187,6 +198,8 @@ def get_invalid_row_mask(df):
 
 # 15. find rows with invalid numeric values
 def find_invalid_rows(df):
+
+    # hold the invalid row mask 
     invalid_row_mask = get_invalid_row_mask(df)
 
     return df[
@@ -197,12 +210,14 @@ def find_invalid_rows(df):
 def remove_invalid_rows(df):
     invalid_row_mask = get_invalid_row_mask(df)
 
+    # keep the valid rows 
     return df[
         ~invalid_row_mask
     ]
 
 # 17. validate the cleaned data before saving
 def validate_cleaned_data(df):
+    # define the expected columns, text columns, and integer columns
     expected_columns = [
         "iso_a2",
         "name_long",
@@ -277,7 +292,7 @@ def validate_cleaned_data(df):
                 f"{column} contains extra spaces."
             )
 
-    # check the ISO code format
+    # check the ISO code format matches two uppercase letters
     if not df["iso_a2"].str.fullmatch(
         r"[A-Z]{2}"
     ).all():
@@ -285,7 +300,7 @@ def validate_cleaned_data(df):
             "Some ISO codes are invalid."
         )
 
-    # check the number columns
+    # check the number columns are integers
     for column in integer_columns:
         if not pd.api.types.is_integer_dtype(
             df[column]
@@ -294,13 +309,13 @@ def validate_cleaned_data(df):
                 f"{column} is not an integer column."
             )
 
-    # check the number ranges
+    # check the number ranges are valid
     if not find_invalid_rows(df).empty:
         raise ValueError(
             "Invalid numeric values remain."
         )
 
-# 18. view the final cleaned data
+# 18. view the final cleaned data information
 def show_final_data(df):
     print(
         f"Final data: "
@@ -321,73 +336,79 @@ def save_cleaned_data(df, output_path):
 
 # run the cleaning process
 def main():
-    # Set the input and output paths
+    # set the input and output paths
     base_dir = Path(__file__).resolve().parent
     input_path = base_dir / "worldData.csv"
     output_path = base_dir / "worldData_cleaned.csv"
 
-    # Load and inspect the original data
+    # load and inspect the original data
     df = load_data(input_path)
     show_original_data(df)
 
-    # Clean the text columns
+    # clean the text columns
     df = clean_text_columns(df)
 
-    # Mark and remove missing values
+    # update the DataFrame to mark missing values
     df = mark_missing_values(df)
 
+    # find rows with missing values
     missing_count = len(
         find_missing_rows(df)
     )
 
+    # update the DataFrame to remove rows with missing values
     df = remove_missing_rows(df)
 
-    # Find and remove repeated columns
+    # find repeated columns
     duplicate_columns = find_duplicate_columns(
         df
     )
 
+    # remove the repeated columns and keep the first column
     removed_columns = [
         second_column
-        for first_column, second_column
+        for _, second_column
         in duplicate_columns
     ]
 
+    # update the DataFrame to remove the repeated columns
     df = remove_duplicate_columns(
         df,
         duplicate_columns
     )
 
-    # Remove the old CSV index column
+    # remove the old CSV index column
     old_index_removed = (
         "Unnamed: 0" in df.columns
     )
 
+    # update the DataFrame to remove the old index column if it exists
     df = remove_old_index_column(df)
 
-    # Find and remove completely repeated rows
+    # find and remove completely repeated rows
     duplicate_count = (
         df.duplicated().sum()
     )
-
+    # update the DataFrame to remove the completely repeated rows
     df = remove_duplicate_rows(df)
 
-    # Convert the numeric columns
+    # convert the numeric columns
     df = convert_numeric_columns(df)
 
-    # Find and remove invalid numeric rows
+    # find and remove invalid numeric rows
     invalid_count = len(
         find_invalid_rows(df)
     )
 
+    # update the DataFrame to remove the invalid numeric rows
     df = remove_invalid_rows(df)
 
-    # Check repeated ISO codes
+    # check repeated ISO codes
     duplicate_iso_count = len(
         find_duplicate_iso_rows(df)
     )
 
-    # Show a short cleaning summary
+    # show a short cleaning summary
     print("\nCleaning summary")
     print("----------------")
     print(
@@ -415,12 +436,12 @@ def main():
         duplicate_iso_count
     )
 
-    # Validate the cleaned data
+    # validate the final data
     validate_cleaned_data(df)
 
     print("Validation passed.")
 
-    # Show and save the cleaned data
+    # show and save the cleaned data
     show_final_data(df)
 
     save_cleaned_data(
@@ -428,6 +449,6 @@ def main():
         output_path
     )
 
-
+# give a name to the method so it can be run solely
 if __name__ == "__main__":
     main()
