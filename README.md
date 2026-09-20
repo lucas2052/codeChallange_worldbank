@@ -13,33 +13,60 @@ The project uses:
 - **Streamlit** to build the interactive interface;
 - **pytest** to test the main functions.
 
-The project can:
+## Key Features
 
-- remove missing, duplicated, and invalid records;
-- validate the final data before exporting it;
-- export the cleaned data as a CSV file;
-- answer the four questions included in the challenge;
-- filter the data using one or more conditions;
-- display summary statistics and filtered records;
-- test the cleaning, analysis, and interface logic.
+- Run the complete workflow with one command using `run.py`.
+- Create and save a cleaned version of the original dataset.
+- Apply numeric validation limits based on reviewed 2014 reference data.
+- Answer the four questions included in the challenge.
+- Launch a local interactive interface automatically.
+- Filter the data using one or more options.
+- Update the results and summary cards automatically when filters change.
+- Show the average, highest and lowest values, their related countries or areas, and the below-average count for each numeric field.
+- View, sort, and download the filtered results.
+- Test the cleaning, analysis, and interface logic with pytest.
+
+## Main Results
+
+### Data Cleaning
+
+| Result | Count |
+|---|---:|
+| Original data | 189 rows, 12 columns |
+| Rows with missing values removed | 18 |
+| Duplicated columns removed | 1 |
+| Duplicated rows removed | 9 |
+| Invalid numeric rows removed | 19 |
+| Final cleaned data | 143 rows, 10 columns |
+
+### Required Questions
+
+| Question | Result |
+|---|---|
+| Continent with the most countries or areas | Africa — 41 |
+| UN region with the largest combined area | Americas — 39,880,488 km² |
+| Country or area with the highest life expectancy | Japan — 84 years |
+| Subregion with the highest average GDP per capita | Western Europe — $56,884.60 |
+| Subregion with the lowest average GDP per capita | Eastern Africa — $1,796.45 |
 
 
 ## Interface
 
-The interface allows users to:
-
-- select one or more continents, regions, subregions, and country or area types;
-- update the results automatically when a filter changes;
-- view summary statistics cards;
-- see the highest and lowest value and its country or area;
-- see how many records are below the average for each numeric field;
-- view the matching records in an interactive table;
-- sort the table by different columns;
-- open the table in full-screen mode;
-- download the filtered table to local device;
-- warning if the result is empty;
 
 ![World Data interface](images/interface.png)
+
+
+| Feature | Description |
+|---|---|
+| Multiple filters | Filter by one or more continents, regions, subregions, and country or area types |
+| Automatic updates | Refresh the results whenever a filter changes |
+| Summary cards | Show summary statistics for area, population, life expectancy, and GDP per capita |
+| Highest and lowest values | Show the highest and lowest values with their related countries or areas |
+| Below-average count | Show how many records are below the average for each numeric field |
+| Interactive table | Display all records matching the selected filters |
+| Table controls | Sort the results by column or view the table in full-screen mode |
+| CSV download | Download the filtered results as a CSV file |
+| No-result handling | Display a warning when the selected filters return no records |
 
 
 ## Project Structure
@@ -77,13 +104,14 @@ WorldDataChallenge/
 
 The project follows seven main stages:
 
-1. **Review** — inspect the original data structure and other basica informations.
-2. **Prepare** — remove spaces around text and define missing values and mark them.
-3. **Clean** — remove missing records, duplicated values, and columns that are not included in the requirement.
-4. **Standardise** — convert numeric columns to the required types, define accepted numeric ranges, and remove invalid records.
-5. **Validate and export** — check the final columns, data types, ISO codes, duplicates, and numeric ranges before saving.
-6. **Analyse** — group the cleaned data by continent, region, and subregion, then calculate counts, totals, averages, and the required highest or lowest results.
-7. **Present** — create filter options from the cleaned data, apply individual or combined selections, calculate summary statistics for the filtered subset, and display the results in consistent summary cards and an interactive table.
+1. **Load and review** — load the original CSV and inspect its structure, columns, types, and values.
+2. **Prepare** — remove spaces around text and mark missing values without losing Namibia's `NA` code.
+3. **Clean** — remove missing records, duplicated rows and columns, and columns that are not required.
+4. **Standardise** — convert numeric columns to integers, define accepted ranges, and remove invalid records.
+5. **Validate and export** — check the final columns, types, ISO codes, duplicates, and numeric ranges before saving `worldData_cleaned.csv`.
+6. **Analyse** — group the cleaned data by continent, region, and subregion, then calculate the counts, totals, averages, and required results.
+7. **Present** — apply individual or combined filters, calculate summary statistics, and display the results in summary cards and an interactive table.
+
 
 
 ## Process
@@ -190,7 +218,7 @@ Pytest will find and run all test files in the `tests/` folder.
 | Missing values | Empty text, `#N/A`, or a pandas missing value. `NA` is excluded because it is Namibia's ISO code | Remove the complete row |
 | ISO code format | The code must contain two uppercase letters and appear only once | Stop validation if an invalid or repeated code remains |
 | Duplicates | Completely repeated rows or columns containing the same values | Keep the first copy and remove the repeated copy |
-| Unexpected data type | The six descriptive columns must contain text. `area_km2`, `pop`, `lifeExp`, and `gdpPercap` are stored as integers | Convert text columns to strings, round valid numeric values, and convert them to integers. Stop and warning if a numeric value cannot be converted |
+| Unexpected data type | The six descriptive columns must contain text. `area_km2`, `pop`, `lifeExp`, and `gdpPercap` must contain numeric values | Convert text columns to strings and numeric columns to integers. Stop with an error if a numeric value cannot be converted |
 | Invalid numeric range | A numeric value is below or above the accepted limits selected from reviewed 2014 reference data | Remove the complete row |
 | Unneeded columns | Columns that are not part of the required output, such as the old CSV index | Remove the column |
 
@@ -218,10 +246,10 @@ The summary is calculated separately for:
 | Summary item | Definition |
 |---|---|
 | Number of results | Number of unique `iso_a2` codes in the filtered data |
-| Average | The sum of all values divided by the number of filtered records |
-| Highest | Highest value and its related area |
-| Lowest | Lowest value and its related area |
-| Below average | Number of records with a value lower than the arithmetic mean |
+| Average | Sum of all values divided by the number of filtered records |
+| Highest | Highest value and its related country or area |
+| Lowest | Lowest value and its related country or area |
+| Below average | Number of records with a value lower than the average |
 
 
 
@@ -238,27 +266,26 @@ maintained authoritative reference data.
 
 ### Extending the Tests
 
-I first wrote unit tests using normal input to check that each function worked.
-After finding unusual values in the dataset, I extended the tests to include
-invalid and boundary cases.
+I first tested each function with normal input. After finding unusual values
+during manual review, I added invalid and boundary cases to confirm that the
+cleaning limits and empty filter results were handled correctly.
 
-These tests check values at and outside the accepted numeric limits, repeated
-ISO codes, missing values, and filter combinations with no results. This
-helped confirm that the cleaning and interface rules worked as intended.
 
-## Limitation
+## Limitations
+
 - **Limited reusability** — the program is closely tied to the structure of
-  `worldData.csv`. Using the program with a different CSV structure would require manual changes to the cleaning functions and tests.
+  `worldData.csv`. A different CSV structure would require manual changes to
+  the cleaning functions and tests.
 
-- **External validation** — The program does not compare each record with
-  an authoritative external source, so it checks data plausibility rather
-  than factual accuracy.
+- **External validation** — the program does not compare each record with an
+  authoritative external source. It checks whether values are reasonable but
+  cannot confirm that they are factually accurate.
 
 - **Possible selection bias** — rows containing missing or invalid values are
-  removed completely.Their removal may affect the final statistics.
+  removed completely. Their removal may affect the final statistics.
 
-- **Numeric precision** — decimal values are rounded and stored as integers. 
-  This causes some precision to be lost.
+- **Numeric precision** — decimal values are rounded and stored as integers,
+  which causes some precision to be lost.
 
 
 ## Possible Improvements
@@ -272,3 +299,14 @@ helped confirm that the cleaning and interface rules worked as intended.
 - **Review removed records** — save removed records and their removal reasons
   in a separate file. They can then be checked before they are corrected or
   permanently removed.
+
+
+## References
+
+The following World Bank indicators were reviewed when setting the numeric
+validation limits:
+
+- [Surface area (sq. km)](https://data.worldbank.org/indicator/AG.SRF.TOTL.K2)
+- [Population, total](https://data.worldbank.org/indicator/SP.POP.TOTL)
+- [Life expectancy at birth, total](https://data.worldbank.org/indicator/SP.DYN.LE00.IN)
+- [GDP per capita (current US$)](https://data.worldbank.org/indicator/NY.GDP.PCAP.CD)
